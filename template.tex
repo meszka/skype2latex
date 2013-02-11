@@ -1,0 +1,11 @@
+\documentclass[a4paper]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage[parfill]{parskip}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\begin{document}
+@{ for message in messages -}@
+\textbf{@{{message.who}}@:} @{{message.text}}@ \\
+@{ endfor }@
+\end{document}
