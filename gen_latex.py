@@ -1,7 +1,10 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-import jinja2, os, re, sys, codecs
+import jinja2, os, re, sys, codecs, locale
+
+# Wrap sys.stdout into a StreamWriter to allow writing unicode.
+sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
 initials = {u'Jakub Szwachła': u'K', u'Agnieszka Talaga': u'A'}
 escapes = {'#':  '\\#',
