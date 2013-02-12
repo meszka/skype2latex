@@ -11,5 +11,8 @@
 \speak{@{{message.who}}@} @{{message.text}}@
 @{ endfor -}@
 \end{dialogue}
+@{ if not loop.last -}@
+\hrulefill
+@{ endif -}@
 @{ endfor -}@
 \end{document}
