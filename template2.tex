@@ -1,0 +1,15 @@
+\documentclass[a4paper]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{dialogue}
+\begin{document}
+@{ for conversation in history -}@
+\begin{dialogue}
+@{ for message in conversation -}@
+\speak{@{{message.who}}@} @{{message.text}}@
+@{ endfor -}@
+\end{dialogue}
+@{ endfor -}@
+\end{document}
