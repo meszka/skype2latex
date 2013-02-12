@@ -18,7 +18,7 @@ escapes = [('\\',  '\\textbackslash{}'),
            ('<' ,  '\\textless{}'),
            ('>' ,  '\\textgreater{}')]
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'),
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
                          block_start_string='@{',
                          block_end_string='}@',
                          variable_start_string='@{{',
@@ -62,7 +62,7 @@ def urlize(text):
 
 
 history = []
-for f in os.listdir(srcdir):
+for f in sorted(os.listdir(srcdir)):
     filename = os.path.join(srcdir, f)
     with codecs.open(filename, encoding='utf-8') as src:
         lines = src.readlines()
