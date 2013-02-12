@@ -31,21 +31,26 @@ def line_to_message(line):
         return {'who': '', 'text': ''}
     name, text = match.groups()
     who = initials[name]
+    text = escape(text)
+    text = urlize(text)
     message = {'who': who, 'text': text}
     return message
 
-def escaped_message(message):
-    who = message['who']
-    text = message['text']
+def escape(text):
     for old, new in escapes.items():
         text = text.replace(old, new)
-    message = {'who': who, 'text': text}
-    return message
+    return text
 
+def urlize(text):
+    return re.sub(r'(https?://[^ ]+)', r'\\url{\1}', text)
+
+
+history = []
 for f in os.listdir(srcdir):
     filename = os.path.join(srcdir, f)
     with codecs.open(filename, encoding='utf-8') as src:
         lines = src.readlines()
-        messages = [line_to_message(line) for line in lines]
-        messages = [escaped_message(message) for message in messages]
-        print template.render(messages=messages)
+        conversation = [line_to_message(line) for line in lines]
+        history.append(conversation)
+print template.render(history=history)
+
