@@ -5,7 +5,10 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \begin{document}
-@{ for message in messages -}@
+@{ for conversation in history -}@
+@{ for message in conversation -}@
 \textbf{@{{message.who}}@:} @{{message.text}}@ \\
+@{ endfor }@
+
 @{ endfor }@
 \end{document}
