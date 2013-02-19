@@ -6,8 +6,8 @@ import jinja2, os, re, sys, codecs, locale, textwrap
 # Wrap sys.stdout into a StreamWriter to allow writing unicode.
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
-initials = {u'Jakub Szwachła': u'K', u'Agnieszka Talaga': u'A'}
-escapes = [('\\',  '\\textbackslash{}'),
+INITIALS = {u'Jakub Szwachła': u'K', u'Agnieszka Talaga': u'A'}
+ESCAPES = [('\\',  '\\textbackslash{}'),
            ('#' ,  '\\#'),
            ('$' ,  '\\$'),
            ('%' ,  '\\%'),
@@ -18,21 +18,12 @@ escapes = [('\\',  '\\textbackslash{}'),
            ('<' ,  '\\textless{}'),
            ('>' ,  '\\textgreater{}')]
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-                         block_start_string='@{',
-                         block_end_string='}@',
-                         variable_start_string='@{{',
-                         variable_end_string='}}@')
-
-srcdir = sys.argv[1]
-template = env.get_template(sys.argv[2])
-
 def line_to_message(line):
     match = re.search(r'\[\d\d:\d\d:\d\d] ([^:]+): (.*)', line)
     if not match:
         return None
     name, text = match.groups()
-    who = initials[name]
+    who = INITIALS[name]
     text = latexify(text)
     text = textwrap.fill(text, width=70, break_long_words=False,
                          break_on_hyphens=False)
@@ -51,7 +42,7 @@ def latexify(text):
     return ' '.join(new_words)
 
 def escape(text):
-    for old, new in escapes:
+    for old, new in ESCAPES:
         text = text.replace(old, new)
     return text
 
@@ -61,14 +52,27 @@ def is_url(text):
 def urlize(text):
     return re.sub(r'(https?://[^ ]+)', r'\\url{\1}', text)
 
+def main():
+    env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+            block_start_string='@{',
+            block_end_string='}@',
+            variable_start_string='@{{',
+            variable_end_string='}}@')
 
-history = []
-for f in sorted(os.listdir(srcdir)):
-    filename = os.path.join(srcdir, f)
-    with codecs.open(filename, encoding='utf-8') as src:
-        lines = src.readlines()
-        conversation = [line_to_message(line) for line in lines]
-        conversation = [m for m in conversation if m != None]
-        history.append(conversation)
-print template.render(history=history)
+    src_dir = sys.argv[1]
+    template = env.get_template(sys.argv[2])
+
+    history = []
+    for src_file in sorted(os.listdir(src_dir)):
+        filename = os.path.join(src_dir, src_file)
+        with codecs.open(filename, encoding='utf-8') as src:
+            lines = src.readlines()
+            conversation = [line_to_message(line) for line in lines]
+            conversation = [m for m in conversation if m != None]
+            history.append(conversation)
+    print template.render(history=history)
+
+if __name__ == '__main__':
+    main()
 
