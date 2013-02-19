@@ -34,7 +34,8 @@ def line_to_message(line):
     name, text = match.groups()
     who = initials[name]
     text = latexify(text)
-    text = textwrap.fill(text)
+    text = textwrap.fill(text, width=70, break_long_words=False,
+                         break_on_hyphens=False)
     message = {'who': who, 'text': text}
     return message
 
