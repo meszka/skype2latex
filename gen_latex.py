@@ -27,6 +27,8 @@ LATEX_ESCAPES = [('\\',  '\\textbackslash{}'),
 MARKDOWN_ESCAPES = [('\\', '\\\\'),
                     ('_', '\\_'),
                     ('*', '\\*')]
+LATEX_URL_REPL = r'\\url{\1}'
+MARKDOWN_URL_REPL = r'<\1>'
 
 
 def line_to_message(line, out_format='latex'):
@@ -36,35 +38,23 @@ def line_to_message(line, out_format='latex'):
     name, text = match.groups()
     who = INITIALS[name]
     if out_format == 'latex':
-        text = latexify(text)
+        text = transform(text, repl=LATEX_URL_REPL, escapes=LATEX_ESCAPES)
     elif out_format == 'markdown':
-        text = markdownify(text)
+        text = transform(text, repl=MARKDOWN_URL_REPL, escapes=MARKDOWN_ESCAPES)
     text = textwrap.fill(text, width=70, break_long_words=False,
                          break_on_hyphens=False)
     message = {'who': who, 'text': text}
     return message
 
 
-def latexify(text):
+def transform(text, repl=LATEX_URL_REPL, escapes=LATEX_ESCAPES):
     new_words = []
     for word in text.split():
         if is_url(word):
-            new_word = latex_urlize(word)
+            new_word = urlize(word, repl)
             new_words.append(new_word)
         else:
-            new_word = escape(word, LATEX_ESCAPES)
-            new_words.append(new_word)
-    return ' '.join(new_words)
-
-
-def markdownify(text):
-    new_words = []
-    for word in text.split():
-        if is_url(word):
-            new_word = markdown_urlize(word)
-            new_words.append(new_word)
-        else:
-            new_word = escape(word, MARKDOWN_ESCAPES)
+            new_word = escape(word, escapes)
             new_words.append(new_word)
     return ' '.join(new_words)
 
@@ -79,12 +69,8 @@ def is_url(text):
     return re.search(r'https?://[^ ]+', text)
 
 
-def latex_urlize(text):
-    return re.sub(r'(https?://[^ ]+)', r'\\url{\1}', text)
-
-
-def markdown_urlize(text):
-    return re.sub(r'(https?://[^ ]+)', r'<\1>', text)
+def urlize(text, repl):
+    return re.sub(r'(https?://[^ ]+)', repl, text)
 
 
 def main():
