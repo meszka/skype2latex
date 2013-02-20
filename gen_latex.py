@@ -15,15 +15,18 @@ sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
 INITIALS = {u'Jakub Szwachła': u'K', u'Agnieszka Talaga': u'A'}
 LATEX_ESCAPES = [('\\',  '\\textbackslash{}'),
-           ('#',  '\\#'),
-           ('$',  '\\$'),
-           ('%',  '\\%'),
-           ('^',  '\\^{}'),
-           ('&',  '\\&'),
-           ('_',  '\\_'),
-           ('~',  '\\~{}'),
-           ('<',  '\\textless{}'),
-           ('>',  '\\textgreater{}')]
+                 ('#',  '\\#'),
+                 ('$',  '\\$'),
+                 ('%',  '\\%'),
+                 ('^',  '\\^{}'),
+                 ('&',  '\\&'),
+                 ('_',  '\\_'),
+                 ('~',  '\\~{}'),
+                 ('<',  '\\textless{}'),
+                 ('>',  '\\textgreater{}')]
+MARKDOWN_ESCAPES = [('\\', '\\\\'),
+                    ('_', '\\_'),
+                    ('*', '\\*')]
 
 
 def line_to_message(line, out_format='latex'):
@@ -61,7 +64,7 @@ def markdownify(text):
             new_word = markdown_urlize(word)
             new_words.append(new_word)
         else:
-            new_word = re.escape(word)
+            new_word = escape(word, MARKDOWN_ESCAPES)
             new_words.append(new_word)
     return ' '.join(new_words)
 
