@@ -9,6 +9,7 @@ import sys
 import textwrap
 
 import jinja2
+import clize
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode.
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -73,7 +74,8 @@ def urlize(text, repl):
     return re.sub(r'(https?://[^ ]+)', repl, text)
 
 
-def main():
+@clize.clize
+def cli_main(src_dir, template_file, fmt='latex'):
     env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
             block_start_string='@{',
@@ -81,12 +83,7 @@ def main():
             variable_start_string='@{{',
             variable_end_string='}}@')
 
-    src_dir = sys.argv[1]
-    template = env.get_template(sys.argv[2])
-
-    fmt = 'latex'
-    if (sys.argv[3]):
-        fmt = sys.argv[3]
+    template = env.get_template(template_file)
 
     history = []
     for src_file in sorted(os.listdir(src_dir)):
@@ -100,4 +97,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    clize.run(cli_main)
