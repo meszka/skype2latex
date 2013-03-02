@@ -93,7 +93,7 @@ def cli_main(src_dir, template_file, fmt='latex'):
             conversation = [line_to_message(line, fmt) for line in lines]
             conversation = [m for m in conversation if m is not None]
             history.append(conversation)
-    print template.render(history=history)
+    sys.stdout.write(template.render(history=history))
 
 
 if __name__ == '__main__':
