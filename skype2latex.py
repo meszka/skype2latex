@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+"""Generate a latex (or markdown) document from Skype conversations."""
+
 import codecs
 import locale
 import os
