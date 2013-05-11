@@ -11,10 +11,11 @@ import textwrap
 import jinja2
 import clize
 
+from settings import INITIALS
+
 # Wrap sys.stdout into a StreamWriter to allow writing unicode.
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
-INITIALS = {u'Jakub Szwachła': u'K', u'Agnieszka Talaga': u'A'}
 LATEX_ESCAPES = [('\\',  '\\textbackslash{}'),
                  ('#',  '\\#'),
                  ('$',  '\\$'),
